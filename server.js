@@ -2,8 +2,10 @@
 
 const express = require('express');
 
-//load array of notes 
-const data = require('./db/notes');
+// load and initialize the sim database:
+const data = require('./db/notes'); //load array of notes
+const simDB = require('./db/simDB');  // <<== add this
+const notes = simDB.initialize(data); // <<== and this
 
 //import the config module.
 const  PORT = require('./config');
@@ -20,6 +22,8 @@ app.use(express.static('public')); // serve static files
 
 //use the logger middleware
 app.use(requestLogger);
+
+//NOW we need to update our endpoints to use simDB 
 
 //The following block of code responds to a GET request to /api/notes and returns data in JSON format.
 //get all and search by query 
