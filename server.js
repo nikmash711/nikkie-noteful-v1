@@ -69,7 +69,6 @@ app.put('/api/notes/:id', (req, res, next) => {
   const updateFields = ['title', 'content'];
 
   updateFields.forEach(field => {
-    console.log(req.body);
     if (field in req.body) {
       updateObj[field] = req.body[field];
     }
@@ -82,7 +81,6 @@ app.put('/api/notes/:id', (req, res, next) => {
     }
     if (item) {
       res.json(item);
-      console.log(updateObj);
     } else {
       next();
     }
