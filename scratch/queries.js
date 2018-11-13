@@ -21,11 +21,11 @@ notes.filter('cats', (err, list) => {
 notes.find(1005, (err, item) => {
   if (err) {
     console.error(err);
-  }
+  } //something crashed 
   if (item) {
     console.log(item);
   } else {
-    console.log('not found');
+    console.log('not found'); //everything worked, and id didnt exist
   }
 });
 

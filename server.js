@@ -23,44 +23,40 @@ app.use(express.static('public')); // serve static files
 //use the logger middleware
 app.use(requestLogger);
 
-//NOW we need to update our endpoints to use simDB 
+//NOW we need to update our endpoints to use simDB methods 
 
 //The following block of code responds to a GET request to /api/notes and returns data in JSON format.
-//get all and search by query 
-app.get('/api/notes', (request, response) => {
-  // Basic JSON response (data is an array of objects)
-  // res.json(data);
-
+//get/load all, and search by query if there is one
+app.get('/api/notes', (request, response, next) => {
   //Destructure the query string property in to `searchTerm` constant
-  const searchTerm = request.query.searchTerm; // retrieve the searchTerm from the query-string on the req.query object. 
-
-  //if search term exists, and the title or content includes the searchTerm, filter the data by that. If searchTerm isnt found, return nothihng. If there's no search term, return the data unfiltered
-  if(searchTerm){
-    response.json(data.filter(note=>note.content.includes(searchTerm) || note.title.includes(searchTerm)
-    ));
-  }
-  else{
-    response.json(data);
-  }
+  const { searchTerm } = request.query; 
+  
+  //using the filter method that exists on the database
+  notes.filter(searchTerm, (err, list) => {
+    if (err) {
+      return next(err); // goes to error handler
+    }
+    response.json(list); // responds with filtered array
+  });
 });
-
-/**
-   * Terse solution
-   */
-// const { searchTerm } = req.query;
-// res.json(searchTerm ? data.filter(item => item.title.includes(searchTerm)) : data);
 
 //get a single note 
-app.get('/api/notes/:id', (request, response) => {
-  const note = data.find(note => note.id === Number(request.params.id)); //its a string, and we need to make it a number 
-  response.json(note);
-  // response.json(data[Number(request.params.id)]); WHY DOESNT THIS WORK  
-});
+app.get('/api/notes/:id', (request, response, next) => {
+  const {id} = request.params;
 
-//purposely making a runtime error: 
-// app.get('/boom', (req, res, next) => {
-//   throw new Error('Boom!!');
-// });
+  notes.find(id, (err, note) => {
+    if (err) {
+      return next(err);
+    }
+    if(note){
+      response.json(note);
+    }
+    else{
+      return next();
+    }
+  });
+});
+//fail and bail -
 
 //Common to leave this at the bottom 
 
