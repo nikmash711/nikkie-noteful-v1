@@ -5,6 +5,9 @@ const express = require('express');
 //load array of notes 
 const data = require('./db/notes');
 
+//import the config module
+const { PORT } = require('./config');
+
 //create an expression application
 const app = express();
 
@@ -43,7 +46,7 @@ app.get('/api/notes/:id', (request, response) => {
   // response.json(data[Number(request.params.id)]); WHY DOESNT THIS WORK  
 });
 
-app.listen(8080, function () {
+app.listen(PORT, function () {
   console.info(`Server listening on ${this.address().port}`);
 }).on('error', err => {
   console.error(err);
