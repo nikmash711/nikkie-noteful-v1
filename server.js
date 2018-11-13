@@ -20,6 +20,10 @@ const app = express();
 //create a static webserver (like running http-server)
 app.use(express.static('public')); // serve static files
 
+//Updating a note requires access to the request body which means we need to tell the Express app to utilize the built-in express.json() middleware. The express.json() middleware parses incoming requests that contain JSON and makes them available on req.body
+//parse request body
+app.use(express.json());
+
 //use the logger middleware
 app.use(requestLogger);
 
@@ -52,11 +56,39 @@ app.get('/api/notes/:id', (request, response, next) => {
       response.json(note);
     }
     else{
-      return next();
+      return next(); //will go to 404
     }
   });
 });
-//fail and bail -
+
+app.put('/api/notes/:id', (req, res, next) => {
+  const {id} = req.params;
+
+  /***** Never trust users - validate input *****/
+  const updateObj = {};
+  const updateFields = ['title', 'content'];
+
+  updateFields.forEach(field => {
+    console.log(req.body);
+    if (field in req.body) {
+      updateObj[field] = req.body[field];
+    }
+    //if it fails this test, updateObj is blank...
+  });
+
+  notes.update(id, updateObj, (err, item) => {
+    if (err) {
+      return next(err);
+    }
+    if (item) {
+      res.json(item);
+      console.log(updateObj);
+    } else {
+      next();
+    }
+  });
+});
+
 
 //Common to leave this at the bottom 
 
