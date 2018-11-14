@@ -5,7 +5,6 @@ const express = require('express');
 //import morgan 
 const morgan = require('morgan');
 
-
 //import the router module
 const notesRouter = require('./router/notes.router');
 
@@ -22,7 +21,7 @@ const app = express();
 //parse request body
 //make sure tihs is before the router module!
 //QUESTION: why do we need need to put the below into notes.router.js??
-app.use(express.json());
+app.use(express.json()); //when did i not require this? 
 
 //logger should use dev predefined format 
 app.use(morgan('dev'));
