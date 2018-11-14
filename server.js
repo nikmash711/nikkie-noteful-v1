@@ -2,7 +2,7 @@
 
 const express = require('express');
 
-// load and initialize the sim database:
+// loads and initialize the sim database:
 const data = require('./db/notes'); //load array of notes
 const simDB = require('./db/simDB');  // <<== add this
 const notes = simDB.initialize(data); // <<== and this
