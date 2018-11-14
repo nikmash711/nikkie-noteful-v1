@@ -75,6 +75,13 @@ app.put('/api/notes/:id', (req, res, next) => {
     //if it fails this test, updateObj is blank...
   });
 
+  /***** Never trust users - validate input *****/
+  if (!updateObj.title) {
+    const err = new Error('Missing `title` in request body');
+    err.status = 400;
+    return next(err);
+  }
+
   notes.update(id, updateObj, (err, item) => {
     if (err) {
       return next(err);
