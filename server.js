@@ -7,15 +7,20 @@ const data = require('./db/notes'); //load array of notes
 const simDB = require('./db/simDB');  // <<== add this
 const notes = simDB.initialize(data); // <<== and this
 
+//import morgan 
+const morgan = require('morgan');
+
 //import the config module.
 const  PORT = require('./config');
 
-const {requestLogger} = require('./middleware/logger');
 //. means current directory 
 //have to import it with same name exported
 
 //create an expression application
 const app = express();
+
+//logger should use dev predefined format 
+app.use(morgan('dev'));
 
 //create a static webserver (like running http-server)
 app.use(express.static('public')); // serve static files
@@ -23,9 +28,6 @@ app.use(express.static('public')); // serve static files
 //Updating a note requires access to the request body which means we need to tell the Express app to utilize the built-in express.json() middleware. The express.json() middleware parses incoming requests that contain JSON and makes them available on req.body
 //parse request body
 app.use(express.json());
-
-//use the logger middleware
-app.use(requestLogger);
 
 //NOW we need to update our endpoints to use simDB methods 
 
