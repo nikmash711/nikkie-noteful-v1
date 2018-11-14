@@ -52,6 +52,7 @@ router.put('/:id', (req, res, next) => {
   const updateFields = ['title', 'content'];
 
   updateFields.forEach(field => {
+    console.log(req.body);
     if (field in req.body) {
       updateObj[field] = req.body[field];
     }
