@@ -2,13 +2,11 @@
 
 const express = require('express');
 
-// loads and initialize the sim database:
-const data = require('./db/notes'); //load array of notes
-const simDB = require('./db/simDB');  // <<== add this
-const notes = simDB.initialize(data); // <<== and this
-
 //import morgan 
 const morgan = require('morgan');
+
+//import the router module
+const notesRouter = require('./router/notes.router');
 
 //import the config module.
 const  PORT = require('./config');
@@ -22,80 +20,15 @@ const app = express();
 //logger should use dev predefined format 
 app.use(morgan('dev'));
 
+//mount router with the core path 
+app.use('/api/notes', notesRouter);
+
 //create a static webserver (like running http-server)
 app.use(express.static('public')); // serve static files
 
 //Updating a note requires access to the request body which means we need to tell the Express app to utilize the built-in express.json() middleware. The express.json() middleware parses incoming requests that contain JSON and makes them available on req.body
 //parse request body
 app.use(express.json());
-
-//NOW we need to update our endpoints to use simDB methods 
-
-//The following block of code responds to a GET request to /api/notes and returns data in JSON format.
-//get/load all, and search by query if there is one
-app.get('/api/notes', (request, response, next) => {
-  //Destructure the query string property in to `searchTerm` constant
-  const { searchTerm } = request.query; 
-  
-  //using the filter method that exists on the database
-  notes.filter(searchTerm, (err, list) => {
-    if (err) {
-      return next(err); // goes to error handler
-    }
-    response.json(list); // responds with filtered array
-  });
-});
-
-//get a single note 
-app.get('/api/notes/:id', (request, response, next) => {
-  const {id} = request.params;
-
-  notes.find(id, (err, note) => {
-    if (err) {
-      return next(err);
-    }
-    if(note){
-      response.json(note);
-    }
-    else{
-      return next(); //will go to 404
-    }
-  });
-});
-
-app.put('/api/notes/:id', (req, res, next) => {
-  const {id} = req.params;
-
-  /***** Never trust users - validate input *****/
-  const updateObj = {};
-  const updateFields = ['title', 'content'];
-
-  updateFields.forEach(field => {
-    if (field in req.body) {
-      updateObj[field] = req.body[field];
-    }
-    //if it fails this test, updateObj is blank...
-  });
-
-  /***** Never trust users - validate input *****/
-  if (!updateObj.title) {
-    const err = new Error('Missing `title` in request body');
-    err.status = 400;
-    return next(err);
-  }
-
-  notes.update(id, updateObj, (err, item) => {
-    if (err) {
-      return next(err);
-    }
-    if (item) {
-      res.json(item);
-    } else {
-      next();
-    }
-  });
-});
-
 
 //Common to leave this at the bottom 
 
