@@ -46,7 +46,6 @@ app.use(function (req, res, next) {
 //If a runtime error occurs in an Express, it will immediately propagate to the next error handler with the method signature: app.use(function (err, req, res, next) {...}), which is this!
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);
-  console.log(err);
   res.json({
     message: err.message,
     error: err //blank?
