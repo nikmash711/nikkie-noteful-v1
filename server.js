@@ -54,8 +54,16 @@ app.use(function (err, req, res, next) {
 });
 
 
-app.listen(PORT, function () {
-  console.info(`Server listening on ${this.address().port}`);
-}).on('error', err => {
-  console.error(err);
-});
+// Listen for incoming connections
+
+//the if statement prevents the server from automatically starting when we run the tests.
+if (require.main === module) {
+  app.listen(PORT, function () {
+    console.info(`Server listening on ${this.address().port}`);
+  }).on('error', err => {
+    console.error(err);
+  });
+}
+
+module.exports = app; // Export for testing
+// exports the Express app so it can be required and used in your test files.
