@@ -129,6 +129,7 @@ describe('POST /api/notes', function(){
         expect(res).to.be.json;
         expect(res.body).to.be.a('object');
         expect(res.body).to.include.keys('id', 'title', 'content');
+        expect(res.headers.location).to.have.string('/api/notes/1010');
         expect(res.body.id).to.not.equal(null);
         // response should be deep equal to `newNote` from above if we assign
         // `id` to it from `res.body.id`

@@ -98,7 +98,7 @@ router.post('/', (req, res, next) => {
   notes.create(newItem)
     .then(item=>{
       if (item) {
-        res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item);
+        res.location(`http://${req.headers.host}/api/notes/${item.id}`).status(201).json(item);
       } else {
         next();
       }
